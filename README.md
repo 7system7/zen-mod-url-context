@@ -57,6 +57,28 @@ Zen menu internals can change between releases. If an action disappears or the r
 
 ## Publishing
 
+### Automatic GitHub releases
+
+The GitHub Actions workflow in `.github/workflows/release.yml` publishes a release when a version tag starting with `v` and a digit is **pushed to GitHub**, for example `v1.0.0`.
+
+First commit and push your changes, including the workflow. Then tag the commit you want to release:
+
+```sh
+git tag -a v1.0.0 -m "Release v1.0.0"
+git push origin v1.0.0
+```
+
+Use a new version tag for each release. Creating a tag locally without pushing it does not trigger a release.
+
+The workflow generates GitHub release notes and attaches:
+
+- `zen-mod-url-context.zip`: a package containing the CSS, installer, Makefile, README, license, and screenshot assets under a `zen-mod-url-context/` directory.
+- `zen-url-context.css`: the standalone stylesheet.
+
+Follow progress in the repository's **Actions** tab; the published version appears under **Releases**. GitHub Actions must be enabled in the repository settings. Authentication uses GitHub's automatic `GITHUB_TOKEN`; no personal access token or extra secret is needed. Release notes are generated from GitHub's change history, not from `CHANGELOG.md`.
+
+### Zen Mods store
+
 This folder is the source package. Publishing requires the current Zen Mods submission process; the previously documented `zen-browser/theme-store` repository was archived in July 2026, so its old issue-template instructions may not be usable. The stylesheet can still be shared directly or hosted from a maintained repository.
 
 ## License
