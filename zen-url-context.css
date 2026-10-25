@@ -1,0 +1,209 @@
+/**
+ * Zen Mod: URL Context Quick Actions
+ * Source: https://github.com/7system7/zen-mod-url-context
+ * License: MIT (see LICENSE)
+ * Styles existing native link context-menu commands as a four-action icon row.
+ */
+
+/* The scrollbox contains a flex slot wrapper. Anchor the buttons to the
+   scrollbox, but reserve their space on the first in-flow menu entry. */
+#contentAreaContextMenu:has(> #context-zenOpenLinkInGlance:not([hidden])) {
+  /* Account for the 8px outside each visible menu edge, plus 4px extra
+     outer breathing room. The gaps between buttons remain 4px. */
+  --url-context-surface-inset: 12px;
+  --url-context-gap: 4px;
+  min-width: 240px !important;
+}
+
+#contentAreaContextMenu:has(> #context-zenOpenLinkInGlance:not([hidden]))::part(arrowscrollbox-scrollbox) {
+  position: relative !important;
+}
+
+/* Exactly one visible, non-action entry receives the spacer. Include menus
+   as well as menuitems: container profiles start with a container submenu.
+   Do not apply the margin to every Open Link entry or to the icon buttons. */
+#contentAreaContextMenu:has(> #context-zenOpenLinkInGlance:not([hidden])) > :nth-child(1 of :is(menu, menuitem, menugroup):not([hidden]):not(#context-zenOpenLinkInGlance, #context-openlinkintab, #context-sendlinktodevice, #context-copylink)) {
+  position: relative !important;
+  margin-block-start: 57px !important;
+}
+
+/* Generate the line on a light-DOM menu entry: generated content on the
+   exported XUL scrollbox part does not render. Account for the native entry
+   padding when centering the line between the buttons and list text. */
+#contentAreaContextMenu:has(> #context-zenOpenLinkInGlance:not([hidden])) > :nth-child(1 of :is(menu, menuitem, menugroup):not([hidden]):not(#context-zenOpenLinkInGlance, #context-openlinkintab, #context-sendlinktodevice, #context-copylink))::before {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+  inset-block-start: -10px !important;
+  inset-inline: 0 !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  visibility: visible !important;
+  background-color: var(--panel-separator-color, color-mix(in srgb, currentColor 20%, transparent)) !important;
+  pointer-events: none !important;
+}
+
+/* Send to Device has moved out of this section; keep only the ordinary
+   Copy Link section separator instead of its now-adjacent Sync separator. */
+#contentAreaContextMenu:has(> #context-zenOpenLinkInGlance:not([hidden])) > #context-sep-sendlinktodevice {
+  display: none !important;
+}
+
+/* Keep the four native actions side by side in the requested order. */
+#context-zenOpenLinkInGlance {
+  inset-inline-start: calc(12.5% + var(--url-context-surface-inset) * 0.75 + var(--url-context-gap) * 0.375) !important;
+}
+
+#context-openlinkintab {
+  inset-inline-start: calc(37.5% + var(--url-context-surface-inset) * 0.25 + var(--url-context-gap) * 0.125) !important;
+}
+
+#context-copylink {
+  inset-inline-start: calc(62.5% - var(--url-context-surface-inset) * 0.25 - var(--url-context-gap) * 0.125) !important;
+}
+
+#context-sendlinktodevice {
+  inset-inline-start: calc(87.5% - var(--url-context-surface-inset) * 0.75 - var(--url-context-gap) * 0.375) !important;
+}
+
+/* Scope the relocation to the same link contexts as the reserved strip. */
+#contentAreaContextMenu:has(> #context-zenOpenLinkInGlance:not([hidden])) > :is(
+  #context-zenOpenLinkInGlance,
+  #context-openlinkintab,
+  #context-sendlinktodevice,
+  #context-copylink
+) {
+  position: absolute !important;
+  inset-block-start: 16px !important;
+  /* Subtract the popup's exterior inset before distributing five equal gaps.
+     Each button gets (100% - 2 * surface-inset - 5 * gap) / 4. Override
+     native menu sizing limits as well as width so the hover fills the cell. */
+  width: calc(25% - var(--url-context-surface-inset) * 0.5 - var(--url-context-gap) * 1.25) !important;
+  min-width: calc(25% - var(--url-context-surface-inset) * 0.5 - var(--url-context-gap) * 1.25) !important;
+  max-width: calc(25% - var(--url-context-surface-inset) * 0.5 - var(--url-context-gap) * 1.25) !important;
+  transform: translateX(-50%) !important;
+  margin: 0 !important;
+  z-index: 1 !important;
+}
+
+/* Convert menu entries into compact icon buttons while preserving their
+   native menu commands, accessibility labels, and disabled/hidden state. */
+#context-zenOpenLinkInGlance,
+#context-openlinkintab,
+#context-sendlinktodevice,
+#context-copylink {
+  appearance: none !important;
+  -moz-appearance: none !important;
+  position: relative !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: auto !important;
+  min-width: 34px !important;
+  height: 32px !important;
+  margin: 4px 0 8px !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 4px !important;
+  background-color: transparent !important;
+  list-style-image: none !important;
+  color: var(--menu-color, currentColor) !important;
+  font-size: 0 !important;
+  text-shadow: none !important;
+}
+
+#context-zenOpenLinkInGlance[hidden],
+#context-openlinkintab[hidden],
+#context-sendlinktodevice[hidden],
+#context-copylink[hidden] {
+  display: none !important;
+}
+
+#context-zenOpenLinkInGlance:hover,
+#context-openlinkintab:hover,
+#context-sendlinktodevice:hover,
+#context-copylink:hover,
+#context-zenOpenLinkInGlance[_moz-menuactive],
+#context-openlinkintab[_moz-menuactive],
+#context-sendlinktodevice[_moz-menuactive],
+#context-copylink[_moz-menuactive] {
+  /* Match the native context-navigation row, including the Linux GTK theme. */
+  background-color: -moz-menuhover !important;
+  color: -moz-menuhovertext !important;
+}
+
+#context-zenOpenLinkInGlance:active,
+#context-openlinkintab:active,
+#context-sendlinktodevice:active,
+#context-copylink:active {
+  background-color: -moz-menuhover !important;
+  color: -moz-menuhovertext !important;
+}
+
+#context-zenOpenLinkInGlance[disabled="true"],
+#context-openlinkintab[disabled="true"],
+#context-sendlinktodevice[disabled="true"],
+#context-copylink[disabled="true"] {
+  opacity: 0.5 !important;
+}
+
+/* Use Zen's bundled chrome resources, with native context-fill coloring.
+   No SVG artwork is embedded or distributed by this mod. */
+#context-zenOpenLinkInGlance::before,
+#context-openlinkintab::before,
+#context-sendlinktodevice::before,
+#context-copylink::before {
+  position: absolute !important;
+  inset-block-start: 50% !important;
+  inset-inline-start: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  content: var(--url-context-icon) !important;
+  display: block !important;
+  width: 18px !important;
+  height: 18px !important;
+  -moz-context-properties: fill, fill-opacity;
+  fill: currentColor;
+  fill-opacity: 1;
+}
+
+/* Built-in eye icon for Glance. */
+#context-zenOpenLinkInGlance::before {
+  --url-context-icon: url("chrome://browser/skin/zen-icons/selectable/eye.svg");
+}
+
+/* Built-in tab icon. */
+#context-openlinkintab::before {
+  --url-context-icon: url("chrome://browser/skin/zen-icons/tab.svg");
+}
+
+/* Built-in Send to Device icon. */
+#context-sendlinktodevice::before {
+  --url-context-icon: url("chrome://browser/skin/zen-icons/send-to-device.svg");
+}
+
+/* Built-in link icon. */
+#context-copylink::before {
+  --url-context-icon: url("chrome://browser/skin/zen-icons/link.svg");
+}
+
+/* No generated tooltips or submenu arrow on the icon-only actions.
+   The native labels remain available to accessibility APIs. */
+#context-zenOpenLinkInGlance::after,
+#context-openlinkintab::after,
+#context-sendlinktodevice::after,
+#context-copylink::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* The native submenu arrow is unnecessary on this icon-only button. */
+#context-sendlinktodevice .menu-right {
+  display: none !important;
+}
+
+#context-sendlinktodevice > .menu-text,
+#context-sendlinktodevice > .menu-iconic-text {
+  visibility: hidden !important;
+}
